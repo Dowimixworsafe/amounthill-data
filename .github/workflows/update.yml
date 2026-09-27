@@ -1,0 +1,34 @@
+# Codzienna aktualizacja danych dla aplikacji Amounthill (PLAN.md, krok 9.2).
+# Czyta obligacjeskarbowe.pl i plik GUS, zapisuje savings_data.json
+# i commituje go tylko wtedy, gdy dane się zmieniły.
+name: Aktualizacja danych
+
+on:
+  schedule:
+    - cron: "17 5 * * *" # codziennie ok. 7:17 czasu polskiego
+  workflow_dispatch: # ręczne uruchomienie z zakładki Actions
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Pobierz dane
+        run: python fetch_edo.py savings_data.json
+      - name: Zapisz zmiany
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add savings_data.json
+          if git diff --cached --quiet; then
+            echo "Bez zmian"
+          else
+            git commit -m "Dane $(date +%F)"
+            git push
+          fi
