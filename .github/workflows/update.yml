@@ -1,5 +1,5 @@
 # Codzienna aktualizacja danych dla aplikacji Amounthill (PLAN.md, krok 9.2).
-# Czyta obligacjeskarbowe.pl i plik GUS, zapisuje savings_data.json
+# Czyta obligacjeskarbowe.pl, plik GUS i archiwum stóp NBP, zapisuje savings_data.json
 # i commituje go tylko wtedy, gdy dane się zmieniły.
 name: Aktualizacja danych
 
@@ -20,7 +20,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Pobierz dane
-        run: python fetch_edo.py savings_data.json
+        run: python fetch_bonds.py savings_data.json
       - name: Zapisz zmiany
         run: |
           git config user.name "github-actions[bot]"
