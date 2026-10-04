@@ -1,0 +1,55 @@
+# Lista instrumentów z kursami w etf_data.json (PLAN.md, krok 9.4, L2).
+# Jedna linijka = jeden instrument: ticker Yahoo, nazwa i grupa rozdzielone kreską.
+# Nazwy trzymamy tu, bo te z Yahoo bywają błędne (ETFBCASH to dawny
+# fundusz WIGtech, a Yahoo dalej tak go nazywa).
+# Grupy: gpw, swiat, usa, em, europa, temat, zloto, obligacje.
+
+ETFBW20TR.WA | Beta ETF WIG20TR | gpw
+ETFBM40TR.WA | Beta ETF mWIG40TR | gpw
+ETFBS80TR.WA | Beta ETF sWIG80TR | gpw
+ETFBDIVPL.WA | Beta ETF Dywidenda Plus | gpw
+ETFBSPXPL.WA | Beta ETF S&P 500 PLN-Hedged | gpw
+ETFBNDXPL.WA | Beta ETF Nasdaq-100 PLN-Hedged | gpw
+ETFBTBSP.WA | Beta ETF TBSP (obligacje skarbowe) | gpw
+ETFBCASH.WA | Beta ETF Obligacji 6M | gpw
+ETFBTCPL.WA | Beta ETF Bitcoin | gpw
+ETFBNQ3LV.WA | Beta ETF Nasdaq-100 3x lewarowany | gpw
+
+VWCE.DE | Vanguard FTSE All-World (akumulujący) | swiat
+VWRL.AS | Vanguard FTSE All-World (dywidendowy) | swiat
+IWDA.AS | iShares Core MSCI World | swiat
+EUNL.DE | iShares Core MSCI World | swiat
+XDWD.DE | Xtrackers MSCI World | swiat
+SPPW.DE | SPDR MSCI World | swiat
+IUSQ.DE | iShares MSCI ACWI | swiat
+SPYI.DE | SPDR MSCI ACWI IMI | swiat
+
+SXR8.DE | iShares Core S&P 500 | usa
+CSPX.L | iShares Core S&P 500 | usa
+VUAA.DE | Vanguard S&P 500 (akumulujący) | usa
+VUSA.DE | Vanguard S&P 500 (dywidendowy) | usa
+SXRV.DE | iShares Nasdaq-100 | usa
+CNDX.L | iShares Nasdaq-100 | usa
+EQQQ.DE | Invesco Nasdaq-100 | usa
+
+IS3N.DE | iShares Core MSCI EM IMI | em
+EMIM.AS | iShares Core MSCI EM IMI | em
+VFEM.AS | Vanguard FTSE Emerging Markets | em
+
+MEUD.PA | Amundi Core Stoxx Europe 600 | europa
+EXSA.DE | iShares Stoxx Europe 600 | europa
+EXS1.DE | iShares Core DAX | europa
+
+VVSM.DE | VanEck Semiconductor | temat
+XAIX.DE | Xtrackers AI & Big Data | temat
+QDVE.DE | iShares S&P 500 Information Technology | temat
+IUSN.DE | iShares MSCI World Small Cap | temat
+ZPRV.DE | SPDR MSCI USA Small Cap Value | temat
+VHYL.AS | Vanguard FTSE All-World High Dividend | temat
+
+4GLD.DE | Xetra-Gold | zloto
+SGLN.L | iShares Physical Gold | zloto
+
+XEON.DE | Xtrackers EUR Overnight Rate | obligacje
+IBCI.DE | iShares EUR Inflation Linked Govt Bond | obligacje
+CBU0.L | iShares USD Treasury Bond 7-10y | obligacje
