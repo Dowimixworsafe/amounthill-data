@@ -1,8 +1,10 @@
-# Lista instrumentów z kursami w etf_data.json (PLAN.md, krok 9.4, L2).
+# Lista instrumentów z kursami w etf_data.json (PLAN.md, krok 9.4, L2,
+# akcje od 2026-10-05, wariant D2).
 # Jedna linijka = jeden instrument: ticker Yahoo, nazwa i grupa rozdzielone kreską.
 # Nazwy trzymamy tu, bo te z Yahoo bywają błędne (ETFBCASH to dawny
 # fundusz WIGtech, a Yahoo dalej tak go nazywa).
-# Grupy: gpw, swiat, usa, em, europa, temat, zloto, obligacje.
+# Grupy: gpw, swiat, usa, em, europa, temat, zloto, obligacje, akcje-pl,
+# akcje-usa.
 
 ETFBW20TR.WA | Beta ETF WIG20TR | gpw
 ETFBM40TR.WA | Beta ETF mWIG40TR | gpw
@@ -53,3 +55,35 @@ SGLN.L | iShares Physical Gold | zloto
 XEON.DE | Xtrackers EUR Overnight Rate | obligacje
 IBCI.DE | iShares EUR Inflation Linked Govt Bond | obligacje
 CBU0.L | iShares USD Treasury Bond 7-10y | obligacje
+
+PKO.WA | PKO Bank Polski | akcje-pl
+PKN.WA | Orlen | akcje-pl
+PZU.WA | PZU | akcje-pl
+PEO.WA | Bank Pekao | akcje-pl
+KGH.WA | KGHM Polska Miedź | akcje-pl
+LPP.WA | LPP | akcje-pl
+DNP.WA | Dino Polska | akcje-pl
+ALE.WA | Allegro | akcje-pl
+CDR.WA | CD Projekt | akcje-pl
+EBP.WA | Erste Bank Polska (dawniej Santander) | akcje-pl
+MBK.WA | mBank | akcje-pl
+PGE.WA | PGE | akcje-pl
+KRU.WA | Kruk | akcje-pl
+BDX.WA | Budimex | akcje-pl
+KTY.WA | Grupa Kęty | akcje-pl
+ALR.WA | Alior Bank | akcje-pl
+OPL.WA | Orange Polska | akcje-pl
+PCO.WA | Pepco | akcje-pl
+MDV.WA | Modivo (dawniej CCC) | akcje-pl
+ZAB.WA | Żabka | akcje-pl
+
+AAPL | Apple | akcje-usa
+MSFT | Microsoft | akcje-usa
+NVDA | Nvidia | akcje-usa
+AMZN | Amazon | akcje-usa
+GOOGL | Alphabet (Google) | akcje-usa
+META | Meta Platforms | akcje-usa
+TSLA | Tesla | akcje-usa
+BRK-B | Berkshire Hathaway | akcje-usa
+AVGO | Broadcom | akcje-usa
+JPM | JPMorgan Chase | akcje-usa
