@@ -8,6 +8,11 @@ on:
     # Pon–pt 22:15 UTC: po zamknięciu GPW, giełd europejskich i Nowego Jorku,
     # więc w pliku jest już kurs zamknięcia z tego dnia.
     - cron: "15 22 * * 1-5"
+    # Wt-sob 7:00 UTC: drugie podejście. GitHub opóźnia nocny przebieg
+    # o 2-3 h, a Yahoo potrafi wtedy jeszcze nie mieć kursu z zagranicy
+    # (piątkowe zamknięcie bez tego czekało do poniedziałku). Ten przebieg
+    # łata też noc, w której nocny padł.
+    - cron: "0 7 * * 2-6"
   workflow_dispatch: # ręczne uruchomienie z zakładki Actions
 
 permissions:
@@ -17,12 +22,13 @@ jobs:
   update:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
       - name: Pobierz kursy
-        run: python fetch_etf.py etf_data.json
+        # Druga próba po 5 min, gdy pierwsza padła (np. awaria DNS runnera).
+        run: python fetch_etf.py etf_data.json || (sleep 300 && python fetch_etf.py etf_data.json)
       - name: Zapisz zmiany
         run: |
           git config user.name "github-actions[bot]"

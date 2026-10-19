@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Obligacje skarbowe, inflacja i stopa NBP — źródło danych aplikacji
+"""Obligacje skarbowe, inflacja i stopa NBP - źródło danych aplikacji
 (PLAN.md, kroki 9.2 i 9.3, wariant Ź1).
 
 Czyta strony serii z obligacjeskarbowe.pl (adres `kodMMRR`, gdzie MMRR to
@@ -8,7 +8,7 @@ miesiąc i rok **wykupu**), plik CSV GUS i archiwum stóp NBP, i zapisuje:
     {"version": 2, "updated": "2026-09-27",
      "bonds": {"EDO": {"2026-09": {"firstYearBp": 535, "marginBp": 200}},
                "COI": {...}, "ROR": {...}, ...},
-     "edo": {...},            # to samo co bonds.EDO — dla wersji aplikacji
+     "edo": {...},            # to samo co bonds.EDO - dla wersji aplikacji
                               # sprzed 9.3, które czytają tylko ten klucz
      "cpi": {"2026-08": 340, ...},
      "nbp": [{"from": "2026-03-05", "bp": 375}, ...]}
@@ -18,7 +18,7 @@ marża do inflacji albo stopy NBP; przy TOS (stała stopa) marży nie ma.
 
 Tylko biblioteka standardowa, żeby GitHub Actions nie musiał niczego
 instalować. Seria, której strona nie istnieje albo nie ma stopy, jest
-pomijana — skrypt nigdy nie zgaduje.
+pomijana - skrypt nigdy nie zgaduje.
 """
 
 import datetime as dt
@@ -45,7 +45,7 @@ BONDS = {
 
 # Dwa brzmienia strony: nowsze „Oprocentowanie: 5,35% w pierwszym…"
 # i starsze „W pierwszym rocznym okresie odsetkowym wynosi 1,70%" (wtedy
-# po „Oprocentowanie:" nie ma liczby — pierwszą byłaby marża).
+# po „Oprocentowanie:" nie ma liczby - pierwszą byłaby marża).
 FIRST_NEW = re.compile(r"Oprocentowanie: (\d+,\d{2})%")
 FIRST_OLD = re.compile(
     r"[Ww] pierwszym (?:rocznym |miesięcznym )?okresie odsetkowym "
@@ -68,10 +68,22 @@ def bp(text):
     return int(whole) * 100 + int(frac)
 
 
-def get(url):
+def get(url, attempts=4):
+    """Treść spod [url]. Błąd sieci albo 5xx próbuje jeszcze raz z rosnącą
+    przerwą (5, 10, 20 s); 404 i inne 4xx od razu wyżej, bo dla nieistniejącej
+    serii to zwykła odpowiedź."""
     request = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-    with urllib.request.urlopen(request, timeout=60) as response:
-        return response.read()
+    for attempt in range(attempts):
+        try:
+            with urllib.request.urlopen(request, timeout=60) as response:
+                return response.read()
+        except urllib.error.HTTPError as error:
+            if error.code < 500 or attempt == attempts - 1:
+                raise
+        except (urllib.error.URLError, TimeoutError):
+            if attempt == attempts - 1:
+                raise
+        time.sleep(5 * 2**attempt)
 
 
 def fetch(code, year, month):
@@ -88,7 +100,7 @@ def fetch(code, year, month):
     if not first or (needs_margin and not margin):
         return None
     # Strona serii może istnieć dla innego miesiąca sprzedaży niż zakładany
-    # — wtedy dane nie należą do tego klucza.
+    # - wtedy dane nie należą do tego klucza.
     sale = SALE.search(html)
     if sale and (int(sale.group(3)), int(sale.group(2))) != (year, month):
         return None
@@ -106,7 +118,7 @@ def fetch_cpi(since_year):
     page = get(GUS_PAGE).decode("utf-8", "replace")
     link = re.search(r'href="([^"]+\.csv)"', page)
     if not link:
-        sys.exit("Brak pliku CSV na stronie GUS — zmienił się układ?")
+        sys.exit("Brak pliku CSV na stronie GUS - zmienił się układ?")
     rows = get("https://stat.gov.pl" + link.group(1)).decode("cp1250")
     cpi = {}
     for line in rows.splitlines():
@@ -123,7 +135,7 @@ def fetch_cpi(since_year):
 
 
 def fetch_nbp(since_year):
-    """Stopa referencyjna NBP od dnia, w punktach bazowych — ROR i DOR
+    """Stopa referencyjna NBP od dnia, w punktach bazowych - ROR i DOR
     płacą ją plus marżę."""
     xml = get(NBP_ARCHIVE).decode("utf-8-sig")
     pairs = re.findall(
@@ -132,9 +144,9 @@ def fetch_nbp(since_year):
         xml,
     )
     if not pairs:
-        sys.exit("Brak stóp w archiwum NBP — zmienił się układ?")
+        sys.exit("Brak stóp w archiwum NBP - zmienił się układ?")
     rates = [{"from": day, "bp": bp(rate)} for day, rate in pairs]
-    # Ostatnia zmiana przed okresem też jest potrzebna — obowiązuje dalej.
+    # Ostatnia zmiana przed okresem też jest potrzebna - obowiązuje dalej.
     earlier = [r for r in rates if r["from"] < f"{since_year}-01-01"]
     return earlier[-1:] + [r for r in rates if r["from"] >= f"{since_year}-01-01"]
 
@@ -155,10 +167,10 @@ def main(out_path, since_year=2016):
             year, month = (year + 1, 1) if month == 12 else (year, month + 1)
         bonds[code] = terms
     if not bonds["EDO"]:
-        sys.exit("Brak danych — strona zmieniła układ?")
+        sys.exit("Brak danych - strona zmieniła układ?")
     cpi = fetch_cpi(since_year - 1)
     nbp = fetch_nbp(since_year)
-    # Te same dane zostawiają starą datę — aplikacja porównuje `updated`
+    # Te same dane zostawiają starą datę - aplikacja porównuje `updated`
     # i bez tego pobierałaby codziennie ten sam plik, a repo dostawałoby
     # codziennie pusty commit.
     updated = today.isoformat()

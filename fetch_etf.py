@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Kursy ETF-ów i walut — źródło danych skarbonek z ETF-em (PLAN.md,
+"""Kursy ETF-ów i walut - źródło danych skarbonek z ETF-em (PLAN.md,
 krok 9.4, warianty ETF-E1, L2 i Z1).
 
 Czyta listę instrumentów z `etf_list.txt`, kursy zamknięcia z Yahoo
@@ -15,14 +15,14 @@ NBP, i zapisuje:
 
 Kursy to liczby całkowite w **dziesięciotysięcznych** jednostki waluty
 (171,14 EUR = 1711400; IS04.DE kosztuje 2,5802 EUR, więc dwa miejsca po
-przecinku nie wystarczą), kursy NBP tak samo (4,3745 zł = 43745) — jak
+przecinku nie wystarczą), kursy NBP tak samo (4,3745 zł = 43745) - jak
 punkty bazowe przy obligacjach: bez ułamków w JSON-ie. Notowania w pensach
 (`GBp`) przeliczamy na funty, więc w pliku waluta to zawsze kod ISO.
 
 Instrument, którego Yahoo akurat nie oddało, **zostaje z poprzedniego
-pliku** — jedna zła odpowiedź nie kasuje mu kursów. Skrypt kończy się
+pliku** - jedna zła odpowiedź nie kasuje mu kursów. Skrypt kończy się
 błędem (mail z GitHuba), dopiero gdy nie wyszła ponad połowa listy albo
-NBP — wtedy aplikacje dalej liczą na ostatnim dobrym pliku.
+NBP - wtedy aplikacje dalej liczą na ostatnim dobrym pliku.
 
 Tylko biblioteka standardowa, żeby GitHub Actions nie musiał niczego
 instalować.
@@ -49,8 +49,12 @@ NBP_CHUNK_DAYS = 93
 LIST_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "etf_list.txt")
 
 
-def get_json(url, attempts=3):
-    """JSON spod [url] albo None przy 404; inne błędy próbuje jeszcze raz."""
+def get_json(url, attempts=5):
+    """JSON spod [url] albo None przy 404; inne błędy próbuje jeszcze raz.
+
+    Przerwy rosną (5, 10, 20, 40 s), bo chwilowa awaria DNS na runnerze
+    trwa dłużej niż kilka sekund (przebieg z 2026-10-16 padł po 6 s prób).
+    """
     request = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
     for attempt in range(attempts):
         try:
@@ -64,7 +68,7 @@ def get_json(url, attempts=3):
         except (urllib.error.URLError, TimeoutError):
             if attempt == attempts - 1:
                 raise
-        time.sleep(2 * (attempt + 1))
+        time.sleep(5 * 2**attempt)
     return None
 
 
@@ -89,7 +93,7 @@ def units4(value):
 def parse_chart(data):
     """(waluta, giełda, {data: kurs}) z odpowiedzi `chart` albo None.
 
-    Dzień notowania liczymy w strefie giełdy (`gmtoffset`), nie w UTC —
+    Dzień notowania liczymy w strefie giełdy (`gmtoffset`), nie w UTC -
     sesja w Tokio albo Nowym Jorku inaczej wypadłaby o dzień obok. Dni bez
     kursu (`null` przy zawieszeniu notowań) pomijamy.
     """
@@ -100,7 +104,7 @@ def parse_chart(data):
     meta = result["meta"]
     currency = meta.get("currency")
     divisor = 1
-    if currency == "GBp":  # pensy — SSAC.L 9325,0 to 93,25 GBP
+    if currency == "GBp":  # pensy - SSAC.L 9325,0 to 93,25 GBP
         currency, divisor = "GBP", 100
     offset = dt.timedelta(seconds=meta.get("gmtoffset", 0))
     stamps = result.get("timestamp") or []
@@ -121,7 +125,7 @@ def fetch_instrument(ticker, since, until):
     """Kursy dzienne [ticker] od [since] do [until] (daty)."""
     start = int(dt.datetime.combine(since, dt.time(), dt.timezone.utc).timestamp())
     end = int(dt.datetime.combine(until + dt.timedelta(days=1), dt.time(), dt.timezone.utc).timestamp())
-    # Zakres dat, nie `range=max` — przy długim zakresie Yahoo oddaje
+    # Zakres dat, nie `range=max` - przy długim zakresie Yahoo oddaje
     # dane miesięczne zamiast dziennych.
     url = f"{YAHOO}{ticker}?period1={start}&period2={end}&interval=1d"
     return parse_chart(get_json(url))
@@ -158,7 +162,7 @@ def main(out_path, today=None):
     for ticker, name, group in read_list():
         try:
             fetched = fetch_instrument(ticker, since, today)
-        except Exception as error:  # noqa: BLE001 — jeden ticker nie przerywa reszty
+        except Exception as error:  # noqa: BLE001 - jeden ticker nie przerywa reszty
             print(f"{ticker}: {error}", file=sys.stderr)
             fetched = None
         if fetched is None:
@@ -179,7 +183,7 @@ def main(out_path, today=None):
     if failed:
         print(f"Bez nowych kursów: {', '.join(failed)}", file=sys.stderr)
     if len(failed) * 2 > len(instruments) + len(failed):
-        sys.exit("Brak kursów dla ponad połowy listy — Yahoo zmieniło API?")
+        sys.exit("Brak kursów dla ponad połowy listy - Yahoo zmieniło API?")
 
     currencies = sorted({item["currency"] for item in instruments.values()} - {"PLN"})
     fx = {code: fetch_fx(code, since, today) for code in currencies}
