@@ -191,20 +191,23 @@ def main(out_path, today=None):
     if empty:
         sys.exit(f"Brak kursów NBP dla {', '.join(empty)}")
 
-    # `updated` zmienia się tylko razem z danymi, żeby workflow nie
-    # commitował pliku, w którym nowa jest sama data.
+    # `updated` i `fetchedAt` zmieniają się tylko razem z danymi, żeby
+    # workflow nie commitował pliku, w którym nowa jest sama data.
     old = load_previous(out_path)
+    stamps = ("updated", "fetchedAt")
     data = {
         "version": 1,
         "updated": old.get("updated", today.isoformat()),
+        "fetchedAt": old.get("fetchedAt"),
         "historyDays": HISTORY_DAYS,
         "instruments": instruments,
         "fx": fx,
     }
-    if {k: v for k, v in data.items() if k != "updated"} != {
-        k: v for k, v in old.items() if k != "updated"
+    if {k: v for k, v in data.items() if k not in stamps} != {
+        k: v for k, v in old.items() if k not in stamps
     }:
         data["updated"] = today.isoformat()
+        data["fetchedAt"] = dt.datetime.now(dt.timezone.utc).isoformat(timespec="minutes")
 
     with open(out_path, "w", encoding="utf-8") as file:
         json.dump(data, file, ensure_ascii=False, separators=(",", ":"), sort_keys=True)
