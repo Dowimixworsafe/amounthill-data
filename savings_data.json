@@ -472,6 +472,10 @@
    "2026-11": {
     "firstYearBp": 475,
     "marginBp": 150
+   },
+   "2026-12": {
+    "firstYearBp": 475,
+    "marginBp": 150
    }
   },
   "DOR": {
@@ -1108,6 +1112,10 @@
    "2026-11": {
     "firstYearBp": 535,
     "marginBp": 200
+   },
+   "2026-12": {
+    "firstYearBp": 535,
+    "marginBp": 200
    }
   },
   "ROD": {
@@ -1586,6 +1594,10 @@
    "2026-11": {
     "firstYearBp": 560,
     "marginBp": 250
+   },
+   "2026-12": {
+    "firstYearBp": 560,
+    "marginBp": 250
    }
   },
   "ROR": {
@@ -1802,6 +1814,10 @@
     "marginBp": 0
    },
    "2026-11": {
+    "firstYearBp": 400,
+    "marginBp": 0
+   },
+   "2026-12": {
     "firstYearBp": 400,
     "marginBp": 0
    }
@@ -2282,6 +2298,10 @@
    "2026-11": {
     "firstYearBp": 500,
     "marginBp": 200
+   },
+   "2026-12": {
+    "firstYearBp": 500,
+    "marginBp": 200
    }
   },
   "TOS": {
@@ -2474,6 +2494,10 @@
     "marginBp": 0
    },
    "2026-11": {
+    "firstYearBp": 440,
+    "marginBp": 0
+   },
+   "2026-12": {
     "firstYearBp": 440,
     "marginBp": 0
    }
@@ -3083,6 +3107,10 @@
   "2026-11": {
    "firstYearBp": 535,
    "marginBp": 200
+  },
+  "2026-12": {
+   "firstYearBp": 535,
+   "marginBp": 200
   }
  },
  "nbp": [
@@ -3183,6 +3211,6 @@
    "from": "2026-03-05"
   }
  ],
- "updated": "2026-11-13",
+ "updated": "2026-11-24",
  "version": 2
 }
