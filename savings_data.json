@@ -650,6 +650,10 @@
    "2026-11": {
     "firstYearBp": 415,
     "marginBp": 15
+   },
+   "2026-12": {
+    "firstYearBp": 415,
+    "marginBp": 15
    }
   },
   "EDO": {
@@ -3211,6 +3215,6 @@
    "from": "2026-03-05"
   }
  ],
- "updated": "2026-11-24",
+ "updated": "2026-11-26",
  "version": 2
 }
